@@ -1,16 +1,9 @@
-# translate_app
+# Context Translate 🌍
 
-A new Flutter project.
+A Flutter translation app powered by Gemini AI that provides **three contextual variations** (Standard, Formal, Casual) for every translation. Features voice input via speech-to-text, auto dark/light theme, and support for multiple languages. Built with clean architecture using Provider for state management and async API integration.
 
-## Getting Started
+**Tech Stack**: Flutter, Dart, Gemini 1.5 Flash API, Speech-to-Text, Provider
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Built to demonstrate modern Flutter development practices and AI integration.
