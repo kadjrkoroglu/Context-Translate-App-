@@ -114,29 +114,48 @@ class _TranslatePageState extends State<TranslatePage> {
                 children: [
                   const SizedBox(height: 16),
 
-                  TextField(
-                    controller: _textController,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Theme.of(context).colorScheme.primary,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(24),
+                  Stack(
+                    children: [
+                      TextField(
+                        controller: _textController,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Theme.of(context).colorScheme.primary,
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(24),
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(24),
+                            ),
+                          ),
+                          hintText: 'Enter text to translate',
+                          hintStyle: TextStyle(
+                            color: Theme.of(context).colorScheme.tertiary,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical:
+                                20, // Alt ve üst eşitlendi, boyut sabit kaldı
+                          ),
+                        ),
+                        maxLines: 7,
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.clear,
+                            color: Theme.of(context).colorScheme.inversePrimary,
+                          ),
+                          onPressed: () => _textController.clear(),
                         ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(24),
-                        ),
-                      ),
-                      hintText: 'Enter text to translate',
-                      hintStyle: TextStyle(
-                        color: Theme.of(context).colorScheme.tertiary,
-                      ),
-                    ),
-                    maxLines: 7,
+                    ],
                   ),
-
                   const SizedBox(height: 16),
 
                   SizedBox(

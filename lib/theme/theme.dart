@@ -9,7 +9,11 @@ final ThemeData lightTheme = ThemeData(
     tertiary: Colors.grey.shade600,
     inversePrimary: Colors.grey.shade900,
   ),
-  textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.grey.shade900),
+  textSelectionTheme: TextSelectionThemeData(
+    cursorColor: Colors.grey.shade900,
+    selectionColor: Colors.grey.shade400,
+    selectionHandleColor: Colors.grey.shade700,
+  ),
 );
 
 final ThemeData darkTheme = ThemeData(
@@ -21,5 +25,9 @@ final ThemeData darkTheme = ThemeData(
     tertiary: Colors.grey.shade600,
     inversePrimary: Colors.grey.shade100,
   ),
-  textSelectionTheme: const TextSelectionThemeData(cursorColor: Colors.white),
+  textSelectionTheme: TextSelectionThemeData(
+    cursorColor: Colors.white,
+    selectionColor: Colors.grey.shade700,
+    selectionHandleColor: Colors.grey.shade500,
+  ),
 );
