@@ -11,3 +11,5 @@ Users can easily toggle between these two modes based on their preferences and c
 **Tech Stack**: Flutter, Dart, Gemini 1.5 Flash API, Google ML Kit, Speech-to-Text, Provider
 ---
 Built to demonstrate modern Flutter development practices and AI integration.
+
+<img width="868" height="895" alt="image" src="https://github.com/user-attachments/assets/864dde8a-fd57-439a-ba1e-b34b6a0e504e" />
