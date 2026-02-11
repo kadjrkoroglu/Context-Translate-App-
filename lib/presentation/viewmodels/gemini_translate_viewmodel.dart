@@ -65,7 +65,7 @@ class GeminiTranslateViewModel extends ChangeNotifier {
         _textController.text,
         _selectedLanguage,
       );
-      outputController.text = response.join('\n\n');
+      outputController.text = response.map((e) => '● $e').join('\n\n');
     } catch (e) {
       _error = _handleError(e);
     } finally {

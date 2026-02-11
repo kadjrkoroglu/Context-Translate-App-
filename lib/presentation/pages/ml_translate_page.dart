@@ -148,41 +148,8 @@ class MLTranslatePage extends StatelessWidget {
     return SizedBox(
       height: 55,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
-            flex: 2,
-            child: ElevatedButton(
-              onPressed: !viewModel.speechEnabled || viewModel.isLoading
-                  ? null
-                  : () {
-                      if (viewModel.isListening) {
-                        viewModel.stopListening();
-                      } else {
-                        viewModel.startListening(outputController);
-                      }
-                    },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                foregroundColor: Theme.of(context).colorScheme.inversePrimary,
-                padding: EdgeInsets.zero,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  side: BorderSide(
-                    color: Theme.of(context).colorScheme.outline,
-                  ),
-                ),
-              ),
-              child: Icon(
-                viewModel.isListening ? Icons.stop : Icons.mic_none,
-                size: 26,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 7,
             child: Row(
               children: [
                 Expanded(
