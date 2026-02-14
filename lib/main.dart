@@ -4,14 +4,19 @@ import 'package:provider/provider.dart';
 import 'package:translate_app/presentation/pages/main_page.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:translate_app/presentation/viewmodels/favorite_viewmodel.dart';
 import 'package:translate_app/theme/theme_provider.dart';
 import 'package:translate_app/theme/theme.dart';
 import 'package:translate_app/presentation/viewmodels/main_viewmodel.dart';
 import 'package:translate_app/presentation/viewmodels/gemini_translate_viewmodel.dart';
 import 'package:translate_app/presentation/viewmodels/ml_translate_viewmodel.dart';
+import 'package:translate_app/data/services/local_storage_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final localStorage = LocalStorageService();
+  await localStorage.init();
 
   final envString = await rootBundle.loadString('env.json');
   final envMap = jsonDecode(envString) as Map<String, dynamic>;
@@ -25,6 +30,11 @@ void main() async {
         ChangeNotifierProvider(create: (_) => MainViewModel()),
         ChangeNotifierProvider(create: (_) => GeminiTranslateViewModel()),
         ChangeNotifierProvider(create: (_) => MLTranslateViewModel()),
+        Provider<LocalStorageService>.value(value: localStorage),
+        ChangeNotifierProvider(
+          create: (context) =>
+              FavoriteViewModel(context.read<LocalStorageService>()),
+        ),
       ],
       child: const MyApp(),
     ),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:translate_app/presentation/viewmodels/favorite_viewmodel.dart';
 import 'package:translate_app/presentation/viewmodels/main_viewmodel.dart';
+import 'package:translate_app/presentation/viewmodels/ml_translate_viewmodel.dart';
+import 'package:translate_app/presentation/viewmodels/gemini_translate_viewmodel.dart';
 
 class OutputScreen extends StatelessWidget {
   final TextEditingController controller;
@@ -14,6 +17,8 @@ class OutputScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mlViewModel = Provider.of<MLTranslateViewModel>(context);
+    final geminiViewModel = Provider.of<GeminiTranslateViewModel>(context);
     final viewModel = Provider.of<MainViewModel>(context);
     final color = Theme.of(context).colorScheme.inversePrimary;
     final border = OutlineInputBorder(
@@ -66,12 +71,33 @@ class OutputScreen extends StatelessWidget {
                           color: color.withValues(alpha: 0.7),
                         ),
                       ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.favorite_border,
-                          color: color.withValues(alpha: 0.7),
-                        ),
+                      Consumer<FavoriteViewModel>(
+                        builder: (context, favViewModel, child) {
+                          final word = viewModel.isMLPage
+                              ? mlViewModel.textController.text
+                              : geminiViewModel.textController.text;
+
+                          final isFav = favViewModel.isFavorite(word);
+
+                          return IconButton(
+                            onPressed: () {
+                              final translation = controller.text;
+
+                              if (word.isNotEmpty && translation.isNotEmpty) {
+                                favViewModel.toggleFavorite(
+                                  word: word,
+                                  translation: translation,
+                                );
+                              }
+                            },
+                            icon: Icon(
+                              isFav ? Icons.favorite : Icons.favorite_border,
+                              color: isFav
+                                  ? Colors.red
+                                  : color.withValues(alpha: 0.7),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),

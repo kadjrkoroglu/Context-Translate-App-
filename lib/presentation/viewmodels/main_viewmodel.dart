@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 class MainViewModel extends ChangeNotifier {
   final PageController _pageController = PageController();
   final TextEditingController _outputController = TextEditingController();
+  final TextEditingController _sourceController = TextEditingController();
 
   PageController get pageController => _pageController;
   TextEditingController get outputController => _outputController;
+  TextEditingController get sourceController => _sourceController;
+
+  bool get isMLPage =>
+      _pageController.hasClients && (_pageController.page ?? 0) < 0.5;
 
   void animateToPage(int index) {
     _pageController.animateToPage(

@@ -8,7 +8,7 @@ The app supports **two translation engines** with seamless switching:
 
 Users can easily toggle between these two modes based on their preferences and connectivity needs.
 
-**Tech Stack**: Flutter, Dart, Gemini 1.5 Flash API, Google ML Kit, Speech-to-Text, Provider
+**Tech Stack**: Flutter, Dart, Gemini 1.5 Flash API, Google ML Kit, Speech-to-Text, Provider, IsarDatabase
 ---
 Built to demonstrate modern Flutter development practices and AI integration.
 
