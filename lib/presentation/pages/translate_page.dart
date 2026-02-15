@@ -11,6 +11,11 @@ class TranslatePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<GeminiTranslateViewModel>(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final primaryColor = colorScheme.primary;
+    final inversePrimary = colorScheme.inversePrimary;
+    final outlineColor = colorScheme.outline;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -27,29 +32,20 @@ class TranslatePage extends StatelessWidget {
                   maxLines: null,
                   minLines: null,
                   textAlignVertical: TextAlignVertical.top,
-                  style: TextStyle(
-                    fontSize: 26,
-                    color: Theme.of(context).colorScheme.inversePrimary,
-                  ),
+                  style: TextStyle(fontSize: 26, color: inversePrimary),
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: Theme.of(context).colorScheme.primary,
+                    fillColor: primaryColor,
                     enabledBorder: OutlineInputBorder(
                       borderRadius: const BorderRadius.all(Radius.circular(24)),
-                      borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.outline,
-                      ),
+                      borderSide: BorderSide(color: outlineColor),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: const BorderRadius.all(Radius.circular(24)),
-                      borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.outline,
-                      ),
+                      borderSide: BorderSide(color: outlineColor),
                     ),
                     hintText: 'Enter text',
-                    hintStyle: TextStyle(
-                      color: Theme.of(context).colorScheme.tertiary,
-                    ),
+                    hintStyle: TextStyle(color: colorScheme.tertiary),
                     contentPadding: const EdgeInsets.all(20),
                   ),
                   onChanged: (value) {
@@ -65,9 +61,7 @@ class TranslatePage extends StatelessWidget {
                     child: IconButton(
                       icon: Icon(
                         Icons.clear,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.inversePrimary.withValues(alpha: 0.7),
+                        color: inversePrimary.withValues(alpha: 0.7),
                       ),
                       onPressed: () {
                         viewModel.clear(outputController);
@@ -88,6 +82,7 @@ class TranslatePage extends StatelessWidget {
                     children: [
                       LanguageDropdown(
                         value: viewModel.selectedLanguage,
+                        showIcons: false,
                         onChanged: (value) {
                           viewModel.setSelectedLanguage(value!);
                         },
@@ -96,7 +91,7 @@ class TranslatePage extends StatelessWidget {
                         Positioned.fill(
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary,
+                              color: primaryColor,
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: Row(
@@ -104,9 +99,7 @@ class TranslatePage extends StatelessWidget {
                               children: [
                                 Icon(
                                   Icons.mic,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.inversePrimary,
+                                  color: inversePrimary,
                                   size: 20,
                                 ),
                                 const SizedBox(width: 8),
@@ -131,17 +124,13 @@ class TranslatePage extends StatelessWidget {
                         ? null
                         : () => viewModel.translate(outputController),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Theme.of(
-                        context,
-                      ).colorScheme.inversePrimary,
+                      backgroundColor: primaryColor,
+                      foregroundColor: inversePrimary,
                       padding: EdgeInsets.zero,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
-                        side: BorderSide(
-                          color: Theme.of(context).colorScheme.outline,
-                        ),
+                        side: BorderSide(color: outlineColor),
                       ),
                     ),
                     child: viewModel.isLoading
@@ -150,9 +139,7 @@ class TranslatePage extends StatelessWidget {
                               width: 24,
                               height: 24,
                               child: CircularProgressIndicator(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.inversePrimary,
+                                color: inversePrimary,
                                 strokeWidth: 2,
                               ),
                             ),

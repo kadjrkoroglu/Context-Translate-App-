@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:translate_app/data/services/gemini_service.dart';
 import 'package:speech_to_text/speech_to_text.dart';
+import 'package:translate_app/data/services/settings_service.dart';
 
 class GeminiTranslateViewModel extends ChangeNotifier {
   final GeminiService _geminiService = GeminiService();
   final SpeechToText _speechToText = SpeechToText();
+  final SettingsService _settingsService;
 
   bool _isLoading = false;
   String? _error;
-  String _selectedLanguage = '-';
+  late String _selectedLanguage;
   bool _speechEnabled = false;
   final TextEditingController _textController = TextEditingController();
 
@@ -19,12 +21,14 @@ class GeminiTranslateViewModel extends ChangeNotifier {
   bool get isListening => _speechToText.isListening;
   TextEditingController get textController => _textController;
 
-  GeminiTranslateViewModel() {
+  GeminiTranslateViewModel(this._settingsService) {
+    _selectedLanguage = _settingsService.geminiTargetLang;
     _initSpeech();
   }
 
   void setSelectedLanguage(String language) {
     _selectedLanguage = language;
+    _settingsService.setGeminiTargetLang(language);
     notifyListeners();
   }
 

@@ -21,12 +21,17 @@ class MainPage extends StatelessWidget {
     final mlViewModel = Provider.of<MLTranslateViewModel>(context);
     final geminiViewModel = Provider.of<GeminiTranslateViewModel>(context);
 
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final surfaceColor = colorScheme.surface;
+    final inversePrimary = colorScheme.inversePrimary;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: surfaceColor,
       extendBody: true,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.surface,
+        backgroundColor: surfaceColor,
         centerTitle: true,
         toolbarHeight: 100,
         elevation: 0,
@@ -35,7 +40,7 @@ class MainPage extends StatelessWidget {
           child: Text(
             'Context Translate',
             style: GoogleFonts.caveat(
-              color: Theme.of(context).colorScheme.inversePrimary,
+              color: inversePrimary,
               fontSize: 40,
               fontWeight: FontWeight.bold,
             ),
@@ -52,11 +57,9 @@ class MainPage extends StatelessWidget {
                 width: 120,
                 margin: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
+                  color: surfaceColor,
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.surfaceContainer,
-                  ),
+                  border: Border.all(color: colorScheme.surfaceContainer),
                 ),
                 child: Stack(
                   children: [
@@ -74,14 +77,13 @@ class MainPage extends StatelessWidget {
                             child: Container(
                               margin: const EdgeInsets.all(2),
                               decoration: BoxDecoration(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.inversePrimary,
+                                color: inversePrimary,
                                 borderRadius: BorderRadius.circular(18),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Theme.of(context).colorScheme.primary
-                                        .withValues(alpha: 0.2),
+                                    color: colorScheme.primary.withValues(
+                                      alpha: 0.2,
+                                    ),
                                     blurRadius: 4,
                                     offset: const Offset(0, 2),
                                   ),
@@ -164,20 +166,16 @@ class MainPage extends StatelessWidget {
             }
           },
           elevation: 2,
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          backgroundColor: inversePrimary,
           shape: const CircleBorder(),
-          child: Icon(
-            Icons.mic,
-            color: Theme.of(context).colorScheme.surface,
-            size: 40,
-          ),
+          child: Icon(Icons.mic, color: surfaceColor, size: 40),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         height: 70,
-        color: Theme.of(context).colorScheme.primary,
+        color: colorScheme.primary,
         shape: const CircularNotchedRectangle(),
         notchMargin: 10,
         child: Row(
@@ -185,11 +183,7 @@ class MainPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             IconButton(
-              icon: Icon(
-                Icons.history,
-                color: Theme.of(context).colorScheme.inversePrimary,
-                size: 28,
-              ),
+              icon: Icon(Icons.history, color: inversePrimary, size: 28),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -200,7 +194,7 @@ class MainPage extends StatelessWidget {
             IconButton(
               icon: Icon(
                 Icons.favorite_border,
-                color: Theme.of(context).colorScheme.inversePrimary,
+                color: inversePrimary,
                 size: 28,
               ),
               onPressed: () {
@@ -214,11 +208,7 @@ class MainPage extends StatelessWidget {
             ),
             const SizedBox(width: 48), // Space for the FAB
             IconButton(
-              icon: Icon(
-                Icons.quiz_outlined,
-                color: Theme.of(context).colorScheme.inversePrimary,
-                size: 28,
-              ),
+              icon: Icon(Icons.quiz_outlined, color: inversePrimary, size: 28),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -227,11 +217,7 @@ class MainPage extends StatelessWidget {
               },
             ),
             IconButton(
-              icon: Icon(
-                Icons.person_outline,
-                color: Theme.of(context).colorScheme.inversePrimary,
-                size: 28,
-              ),
+              icon: Icon(Icons.person_outline, color: inversePrimary, size: 28),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -251,6 +237,8 @@ class MainPage extends StatelessWidget {
     String label,
     int index,
   ) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Expanded(
       child: GestureDetector(
         onTap: () {
@@ -273,8 +261,8 @@ class MainPage extends StatelessWidget {
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: Color.lerp(
-                    Theme.of(context).colorScheme.onSurface,
-                    Theme.of(context).colorScheme.onPrimary,
+                    colorScheme.onSurface,
+                    colorScheme.onPrimary,
                     selectionFactor,
                   ),
                 ),

@@ -4,20 +4,23 @@ import 'package:google_mlkit_translation/google_mlkit_translation.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:translate_app/data/services/dictionary_service.dart';
 import 'package:translate_app/data/constants/ml_languages.dart';
+import 'package:translate_app/data/services/settings_service.dart';
 
 class MLTranslateViewModel extends ChangeNotifier {
   final DictionaryService _dictionaryService = DictionaryService();
   final SpeechToText _speechToText = SpeechToText();
   final TextEditingController _textController = TextEditingController();
+  final SettingsService _settingsService;
 
   OnDeviceTranslator? _onDeviceTranslator;
-  String _sourceLanguage = 'English';
-  String _targetLanguage = '-';
+  late String _sourceLanguage;
+  late String _targetLanguage;
   bool _isLoading = false;
   String? _spellingCorrection;
   String? _downloadingLanguage;
   bool _speechEnabled = false;
   Timer? _debounce;
+  Set<String> _downloadedModels = {};
 
   TextEditingController get textController => _textController;
   String get sourceLanguage => _sourceLanguage;
@@ -27,9 +30,30 @@ class MLTranslateViewModel extends ChangeNotifier {
   String? get downloadingLanguage => _downloadingLanguage;
   bool get speechEnabled => _speechEnabled;
   bool get isListening => _speechToText.isListening;
+  List<String> get recentLanguages => _settingsService.recentLanguages;
+  Set<String> get downloadedModels => _downloadedModels;
 
-  MLTranslateViewModel() {
+  MLTranslateViewModel(this._settingsService) {
+    _sourceLanguage = _settingsService.mlSourceLang;
+    _targetLanguage = _settingsService.mlTargetLang;
     _initSpeech();
+    fetchDownloadedModels();
+  }
+
+  Future<void> fetchDownloadedModels() async {
+    final modelManager = OnDeviceTranslatorModelManager();
+    final List<String> downloaded = [];
+
+    // Check all languages from our list
+    for (final lang in MlLanguages.languageList) {
+      final bcp = MlLanguages.mapNameToBCP(lang);
+      if (await modelManager.isModelDownloaded(bcp)) {
+        downloaded.add(lang);
+      }
+    }
+
+    _downloadedModels = downloaded.toSet();
+    notifyListeners();
   }
 
   void _initSpeech() async {
@@ -63,6 +87,13 @@ class MLTranslateViewModel extends ChangeNotifier {
     final temp = _sourceLanguage;
     _sourceLanguage = _targetLanguage;
     _targetLanguage = temp;
+
+    // Persist changes
+    _settingsService.setMlSourceLang(_sourceLanguage);
+    _settingsService.setMlTargetLang(_targetLanguage);
+    _settingsService.addRecentLanguage(_sourceLanguage);
+    _settingsService.addRecentLanguage(_targetLanguage);
+
     if (_textController.text.isNotEmpty) {
       translate(outputController);
     }
@@ -77,6 +108,8 @@ class MLTranslateViewModel extends ChangeNotifier {
       swapLanguages(outputController);
     } else {
       _sourceLanguage = language;
+      _settingsService.setMlSourceLang(language); // Persist
+      _settingsService.addRecentLanguage(language);
       checkAndDownloadModel(language, outputController);
       translate(outputController);
     }
@@ -91,6 +124,8 @@ class MLTranslateViewModel extends ChangeNotifier {
       swapLanguages(outputController);
     } else {
       _targetLanguage = language;
+      _settingsService.setMlTargetLang(language); // Persist
+      _settingsService.addRecentLanguage(language);
       checkAndDownloadModel(language, outputController);
       translate(outputController);
     }
@@ -116,6 +151,7 @@ class MLTranslateViewModel extends ChangeNotifier {
           await _dictionaryService.downloadDictionary(bcpCode);
         }
         await modelManager.downloadModel(bcpCode);
+        await fetchDownloadedModels(); // Refresh list after download
       } catch (e) {
         debugPrint('Download error: $e');
       } finally {

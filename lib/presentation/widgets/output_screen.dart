@@ -20,10 +20,16 @@ class OutputScreen extends StatelessWidget {
     final mlViewModel = Provider.of<MLTranslateViewModel>(context);
     final geminiViewModel = Provider.of<GeminiTranslateViewModel>(context);
     final viewModel = Provider.of<MainViewModel>(context);
-    final color = Theme.of(context).colorScheme.inversePrimary;
+
+    final colorScheme = Theme.of(context).colorScheme;
+    final color = colorScheme.inversePrimary;
+    final primaryColor = colorScheme.primary;
+    final tertiaryColor = colorScheme.tertiary;
+    final outlineColor = colorScheme.outline;
+
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(24),
-      borderSide: BorderSide(color: Theme.of(context).colorScheme.outline),
+      borderSide: BorderSide(color: outlineColor),
     );
 
     return SizedBox(
@@ -47,14 +53,12 @@ class OutputScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 26 - (page * 8), color: color),
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Theme.of(context).colorScheme.primary,
+                  fillColor: primaryColor,
                   border: border,
                   enabledBorder: border,
                   focusedBorder: border,
                   hintText: hintText,
-                  hintStyle: TextStyle(
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
+                  hintStyle: TextStyle(color: tertiaryColor),
                   contentPadding: const EdgeInsets.all(20),
                 ),
               ),

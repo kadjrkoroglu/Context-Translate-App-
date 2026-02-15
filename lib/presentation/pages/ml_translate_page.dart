@@ -11,6 +11,9 @@ class MLTranslatePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<MLTranslateViewModel>(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final inversePrimary = colorScheme.inversePrimary;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -20,9 +23,9 @@ class MLTranslatePage extends StatelessWidget {
           Container(
             height: 200,
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
+              color: colorScheme.primary,
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Theme.of(context).colorScheme.outline),
+              border: Border.all(color: colorScheme.outline),
             ),
             child: Stack(
               children: [
@@ -38,15 +41,10 @@ class MLTranslatePage extends StatelessWidget {
                         maxLines: null,
                         minLines: 1,
                         textAlignVertical: TextAlignVertical.top,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.inversePrimary,
-                          fontSize: 26,
-                        ),
+                        style: TextStyle(color: inversePrimary, fontSize: 26),
                         decoration: InputDecoration(
                           hintText: 'Enter text',
-                          hintStyle: TextStyle(
-                            color: Theme.of(context).colorScheme.tertiary,
-                          ),
+                          hintStyle: TextStyle(color: colorScheme.tertiary),
                           contentPadding: const EdgeInsets.fromLTRB(
                             16,
                             16,
@@ -62,8 +60,7 @@ class MLTranslatePage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Material(
-                            color: Theme.of(context).colorScheme.inversePrimary
-                                .withValues(alpha: 0.08),
+                            color: inversePrimary.withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(12),
                             child: InkWell(
                               borderRadius: BorderRadius.circular(12),
@@ -88,10 +85,9 @@ class MLTranslatePage extends StatelessWidget {
                                         TextSpan(
                                           text: 'Did you mean: ',
                                           style: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .inversePrimary
-                                                .withValues(alpha: 0.7),
+                                            color: inversePrimary.withValues(
+                                              alpha: 0.7,
+                                            ),
                                             fontSize: 13,
                                           ),
                                           children: [
@@ -123,9 +119,7 @@ class MLTranslatePage extends StatelessWidget {
                     child: IconButton(
                       icon: Icon(
                         Icons.clear,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.inversePrimary.withValues(alpha: 0.7),
+                        color: inversePrimary.withValues(alpha: 0.7),
                       ),
                       onPressed: () => viewModel.clear(outputController),
                     ),
@@ -145,6 +139,9 @@ class MLTranslatePage extends StatelessWidget {
     MLTranslateViewModel viewModel,
     TextEditingController outputController,
   ) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final inversePrimary = colorScheme.inversePrimary;
+
     return SizedBox(
       height: 55,
       child: Stack(
@@ -154,11 +151,13 @@ class MLTranslatePage extends StatelessWidget {
               Expanded(
                 child: LanguageDropdown(
                   value: viewModel.sourceLanguage,
+                  recentLanguages: viewModel.recentLanguages,
+                  downloadedModels: viewModel.downloadedModels,
                   isLoading:
                       viewModel.downloadingLanguage == viewModel.sourceLanguage,
                   onChanged: (v) =>
                       viewModel.setSourceLanguage(v!, outputController),
-                  showIcon: false,
+                  showIcons: true,
                 ),
               ),
               SizedBox(
@@ -167,20 +166,20 @@ class MLTranslatePage extends StatelessWidget {
                   onPressed: () => viewModel.swapLanguages(outputController),
                   icon: Icon(
                     Icons.swap_horiz,
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.inversePrimary.withValues(alpha: 0.6),
+                    color: inversePrimary.withValues(alpha: 0.6),
                   ),
                 ),
               ),
               Expanded(
                 child: LanguageDropdown(
                   value: viewModel.targetLanguage,
+                  recentLanguages: viewModel.recentLanguages,
+                  downloadedModels: viewModel.downloadedModels,
                   isLoading:
                       viewModel.downloadingLanguage == viewModel.targetLanguage,
                   onChanged: (v) =>
                       viewModel.setTargetLanguage(v!, outputController),
-                  showIcon: false,
+                  showIcons: true,
                 ),
               ),
             ],
@@ -189,17 +188,13 @@ class MLTranslatePage extends StatelessWidget {
             Positioned.fill(
               child: Container(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
+                  color: colorScheme.primary,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.mic,
-                      color: Theme.of(context).colorScheme.inversePrimary,
-                      size: 20,
-                    ),
+                    Icon(Icons.mic, color: inversePrimary, size: 20),
                     const SizedBox(width: 8),
                     const Text(
                       'Listening...',

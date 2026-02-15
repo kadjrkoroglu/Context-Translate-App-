@@ -4,7 +4,9 @@ class LanguageDropdown extends StatelessWidget {
   final String value;
   final ValueChanged<String?> onChanged;
   final List<String>? items;
-  final bool showIcon;
+  final List<String> recentLanguages;
+  final Set<String> downloadedModels;
+  final bool showIcons;
   final bool isLoading;
 
   const LanguageDropdown({
@@ -12,7 +14,9 @@ class LanguageDropdown extends StatelessWidget {
     required this.value,
     required this.onChanged,
     this.items,
-    this.showIcon = true,
+    this.recentLanguages = const [],
+    this.downloadedModels = const {},
+    this.showIcons = true,
     this.isLoading = false,
   });
 
@@ -45,37 +49,46 @@ class LanguageDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final border = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide(color: colorScheme.outline),
-    );
+    final color = colorScheme.inversePrimary;
 
-    final currentItems = items ?? languages;
-    final List<String> dropdownItems = List.from(currentItems);
+    // Build combined list for dropdown items without duplicates
+    final List<dynamic> dropdownData = [];
+    final List<String> allLangs = items ?? languages;
+
+    if (recentLanguages.isNotEmpty && items == null) {
+      dropdownData.add('RECENTS');
+      dropdownData.addAll(recentLanguages);
+      dropdownData.add('DIVIDER');
+
+      dropdownData.add('ALL LANGUAGES');
+      // Add languages not already in recents
+      dropdownData.addAll(
+        allLangs.where((lang) => !recentLanguages.contains(lang)),
+      );
+    } else {
+      // Add all if no recents or custom items provided
+      dropdownData.addAll(allLangs);
+    }
 
     final bool isPlaceholder = value == '-';
     final String? effectiveValue = isPlaceholder ? null : value;
 
     return Theme(
-      data: Theme.of(context).copyWith(
-        splashColor: colorScheme.inversePrimary.withValues(alpha: 0.2),
-      ),
+      data: Theme.of(
+        context,
+      ).copyWith(splashColor: color.withValues(alpha: 0.2)),
       child: DropdownButtonFormField<String>(
-        initialValue: effectiveValue,
+        value: effectiveValue,
         hint: isPlaceholder
             ? Center(
                 child: Text(
-                  '—  ',
-                  style: TextStyle(
-                    color: colorScheme.inversePrimary,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  '—',
+                  style: TextStyle(color: color, fontWeight: FontWeight.bold),
                 ),
               )
             : null,
         isExpanded: true,
-        iconEnabledColor: colorScheme.inversePrimary,
+        iconEnabledColor: color,
         borderRadius: BorderRadius.circular(16),
         dropdownColor: colorScheme.primary,
         decoration: InputDecoration(
@@ -86,20 +99,19 @@ class LanguageDropdown extends StatelessWidget {
             horizontal: 12,
             vertical: 16,
           ),
-          border: border,
-          enabledBorder: border,
-          focusedBorder: border,
-          prefixIcon: !isLoading && showIcon
-              ? Icon(
-                  Icons.language,
-                  color: colorScheme.inversePrimary,
-                  size: 20,
-                )
-              : null,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: colorScheme.outline),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: colorScheme.outline),
+          ),
         ),
-        iconSize: isLoading ? 0 : 24,
-        selectedItemBuilder: (BuildContext context) {
-          return dropdownItems.map((String item) {
+        selectedItemBuilder: (context) {
+          // Display for the closed dropdown state
+          return dropdownData.map((data) {
+            final String text = data is String ? data : '';
             return Center(
               child: isLoading
                   ? SizedBox(
@@ -107,28 +119,54 @@ class LanguageDropdown extends StatelessWidget {
                       height: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: colorScheme.inversePrimary,
+                        color: color,
                       ),
                     )
-                  : FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        item,
-                        style: TextStyle(
-                          color: colorScheme.inversePrimary,
-                          fontSize: 15,
-                        ),
-                      ),
-                    ),
+                  : Text(text, style: TextStyle(color: color, fontSize: 15)),
             );
           }).toList();
         },
-        items: dropdownItems.map((String lang) {
-          return DropdownMenuItem(
+        items: dropdownData.map((data) {
+          if (data == 'DIVIDER') {
+            return DropdownMenuItem<String>(
+              enabled: false,
+              child: Divider(color: color.withValues(alpha: 0.2)),
+            );
+          }
+          if (data == 'RECENTS' || data == 'ALL LANGUAGES') {
+            return DropdownMenuItem<String>(
+              enabled: false,
+              child: Text(
+                data,
+                style: TextStyle(
+                  color: color.withValues(alpha: 0.5),
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            );
+          }
+
+          final String lang = data as String;
+          final bool isDownloaded = downloadedModels.contains(lang);
+
+          return DropdownMenuItem<String>(
             value: lang,
-            child: Text(
-              lang,
-              style: TextStyle(color: colorScheme.inversePrimary, fontSize: 15),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    lang,
+                    style: TextStyle(color: color, fontSize: 15),
+                  ),
+                ),
+                if (showIcons)
+                  Icon(
+                    isDownloaded ? Icons.check : Icons.file_download_outlined,
+                    color: color.withValues(alpha: 0.6),
+                    size: 22,
+                  ),
+              ],
             ),
           );
         }).toList(),

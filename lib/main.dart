@@ -12,11 +12,17 @@ import 'package:translate_app/presentation/viewmodels/gemini_translate_viewmodel
 import 'package:translate_app/presentation/viewmodels/ml_translate_viewmodel.dart';
 import 'package:translate_app/data/services/local_storage_service.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:translate_app/data/services/settings_service.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final localStorage = LocalStorageService();
   await localStorage.init();
+
+  final prefs = await SharedPreferences.getInstance();
+  final settingsService = SettingsService(prefs);
 
   final envString = await rootBundle.loadString('env.json');
   final envMap = jsonDecode(envString) as Map<String, dynamic>;
@@ -28,8 +34,15 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => MainViewModel()),
-        ChangeNotifierProvider(create: (_) => GeminiTranslateViewModel()),
-        ChangeNotifierProvider(create: (_) => MLTranslateViewModel()),
+        Provider<SettingsService>.value(value: settingsService),
+        ChangeNotifierProvider(
+          create: (context) =>
+              GeminiTranslateViewModel(context.read<SettingsService>()),
+        ),
+        ChangeNotifierProvider(
+          create: (context) =>
+              MLTranslateViewModel(context.read<SettingsService>()),
+        ),
         Provider<LocalStorageService>.value(value: localStorage),
         ChangeNotifierProvider(
           create: (context) =>
