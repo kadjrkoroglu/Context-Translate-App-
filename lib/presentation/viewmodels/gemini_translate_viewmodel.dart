@@ -22,6 +22,7 @@ class GeminiTranslateViewModel extends ChangeNotifier {
   bool get speechEnabled => _speechEnabled;
   bool get isListening => _speechToText.isListening;
   TextEditingController get textController => _textController;
+  List<String> get recentLanguages => _settingsService.recentLanguages;
 
   GeminiTranslateViewModel(this._settingsService, this._historyViewModel) {
     _selectedLanguage = _settingsService.geminiTargetLang;
@@ -31,6 +32,7 @@ class GeminiTranslateViewModel extends ChangeNotifier {
   void setSelectedLanguage(String language) {
     _selectedLanguage = language;
     _settingsService.setGeminiTargetLang(language);
+    _settingsService.addRecentLanguage(language);
     notifyListeners();
   }
 

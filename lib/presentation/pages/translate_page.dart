@@ -82,6 +82,7 @@ class TranslatePage extends StatelessWidget {
                     children: [
                       LanguageDropdown(
                         value: viewModel.selectedLanguage,
+                        recentLanguages: viewModel.recentLanguages,
                         showIcons: false,
                         onChanged: (value) {
                           viewModel.setSelectedLanguage(value!);
