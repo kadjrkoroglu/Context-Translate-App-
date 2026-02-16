@@ -10,6 +10,7 @@ import 'package:translate_app/theme/theme.dart';
 import 'package:translate_app/presentation/viewmodels/main_viewmodel.dart';
 import 'package:translate_app/presentation/viewmodels/gemini_translate_viewmodel.dart';
 import 'package:translate_app/presentation/viewmodels/ml_translate_viewmodel.dart';
+import 'package:translate_app/presentation/viewmodels/history_viewmodel.dart';
 import 'package:translate_app/data/services/local_storage_service.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,18 +36,26 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => MainViewModel()),
         Provider<SettingsService>.value(value: settingsService),
-        ChangeNotifierProvider(
-          create: (context) =>
-              GeminiTranslateViewModel(context.read<SettingsService>()),
-        ),
-        ChangeNotifierProvider(
-          create: (context) =>
-              MLTranslateViewModel(context.read<SettingsService>()),
-        ),
         Provider<LocalStorageService>.value(value: localStorage),
         ChangeNotifierProvider(
           create: (context) =>
               FavoriteViewModel(context.read<LocalStorageService>()),
+        ),
+        ChangeNotifierProvider(
+          create: (context) =>
+              HistoryViewModel(context.read<LocalStorageService>()),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => GeminiTranslateViewModel(
+            context.read<SettingsService>(),
+            context.read<HistoryViewModel>(),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => MLTranslateViewModel(
+            context.read<SettingsService>(),
+            context.read<HistoryViewModel>(),
+          ),
         ),
       ],
       child: const MyApp(),

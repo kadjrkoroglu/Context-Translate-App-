@@ -4,6 +4,7 @@ import 'package:google_mlkit_translation/google_mlkit_translation.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:translate_app/data/services/dictionary_service.dart';
 import 'package:translate_app/data/constants/ml_languages.dart';
+import 'package:translate_app/presentation/viewmodels/history_viewmodel.dart';
 import 'package:translate_app/data/services/settings_service.dart';
 
 class MLTranslateViewModel extends ChangeNotifier {
@@ -11,6 +12,7 @@ class MLTranslateViewModel extends ChangeNotifier {
   final SpeechToText _speechToText = SpeechToText();
   final TextEditingController _textController = TextEditingController();
   final SettingsService _settingsService;
+  final HistoryViewModel _historyViewModel;
 
   OnDeviceTranslator? _onDeviceTranslator;
   late String _sourceLanguage;
@@ -20,6 +22,7 @@ class MLTranslateViewModel extends ChangeNotifier {
   String? _downloadingLanguage;
   bool _speechEnabled = false;
   Timer? _debounce;
+  Timer? _historyTimer;
   Set<String> _downloadedModels = {};
 
   TextEditingController get textController => _textController;
@@ -33,7 +36,7 @@ class MLTranslateViewModel extends ChangeNotifier {
   List<String> get recentLanguages => _settingsService.recentLanguages;
   Set<String> get downloadedModels => _downloadedModels;
 
-  MLTranslateViewModel(this._settingsService) {
+  MLTranslateViewModel(this._settingsService, this._historyViewModel) {
     _sourceLanguage = _settingsService.mlSourceLang;
     _targetLanguage = _settingsService.mlTargetLang;
     _initSpeech();
@@ -205,6 +208,24 @@ class MLTranslateViewModel extends ChangeNotifier {
         correctedText,
       );
       outputController.text = response ?? '';
+
+      // Cancel previous history timer to wait for 3 seconds of silence
+      _historyTimer?.cancel();
+
+      // Save to history only after 3 seconds of inactivity
+      if (outputController.text.isNotEmpty) {
+        final trimmedWord = originalText.trim();
+        final trimmedTranslation = outputController.text.trim();
+
+        if (trimmedWord.isNotEmpty) {
+          _historyTimer = Timer(const Duration(seconds: 3), () {
+            _historyViewModel.addHistoryItem(
+              word: trimmedWord,
+              translation: trimmedTranslation,
+            );
+          });
+        }
+      }
     } catch (e) {
       debugPrint('Translation error: $e');
     } finally {
@@ -217,6 +238,7 @@ class MLTranslateViewModel extends ChangeNotifier {
     await _speechToText.listen(
       onResult: (result) {
         _textController.text = result.recognizedWords;
+        // When voice input happens, we also trigger translate
         translate(outputController);
       },
     );
@@ -237,7 +259,25 @@ class MLTranslateViewModel extends ChangeNotifier {
     }
   }
 
+  void saveHistoryNow(String translation) {
+    _historyTimer?.cancel();
+    final word = _textController.text.trim();
+    final trimmedTranslation = translation.trim();
+
+    if (word.isNotEmpty && trimmedTranslation.isNotEmpty) {
+      _historyViewModel.addHistoryItem(
+        word: word,
+        translation: trimmedTranslation,
+      );
+    }
+  }
+
   void clear(TextEditingController outputController) {
+    // Save history immediately before clearing if there's a result
+    if (outputController.text.isNotEmpty) {
+      saveHistoryNow(outputController.text);
+    }
+
     _textController.clear();
     outputController.clear();
     _spellingCorrection = null;
@@ -247,6 +287,7 @@ class MLTranslateViewModel extends ChangeNotifier {
   @override
   void dispose() {
     _debounce?.cancel();
+    _historyTimer?.cancel();
     _onDeviceTranslator?.close();
     _textController.dispose();
     super.dispose();

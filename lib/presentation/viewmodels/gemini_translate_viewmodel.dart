@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:translate_app/data/services/gemini_service.dart';
 import 'package:speech_to_text/speech_to_text.dart';
+import 'package:translate_app/presentation/viewmodels/history_viewmodel.dart';
 import 'package:translate_app/data/services/settings_service.dart';
 
 class GeminiTranslateViewModel extends ChangeNotifier {
   final GeminiService _geminiService = GeminiService();
   final SpeechToText _speechToText = SpeechToText();
   final SettingsService _settingsService;
+  final HistoryViewModel _historyViewModel;
 
   bool _isLoading = false;
   String? _error;
@@ -21,7 +23,7 @@ class GeminiTranslateViewModel extends ChangeNotifier {
   bool get isListening => _speechToText.isListening;
   TextEditingController get textController => _textController;
 
-  GeminiTranslateViewModel(this._settingsService) {
+  GeminiTranslateViewModel(this._settingsService, this._historyViewModel) {
     _selectedLanguage = _settingsService.geminiTargetLang;
     _initSpeech();
   }
@@ -79,6 +81,19 @@ class GeminiTranslateViewModel extends ChangeNotifier {
         _selectedLanguage,
       );
       outputController.text = response.map((t) => '● $t').join('\n\n');
+
+      // Save to history with trimmed text
+      if (outputController.text.isNotEmpty) {
+        final trimmedWord = _textController.text.trim();
+        final trimmedTranslation = outputController.text.trim();
+
+        if (trimmedWord.isNotEmpty) {
+          _historyViewModel.addHistoryItem(
+            word: trimmedWord,
+            translation: trimmedTranslation,
+          );
+        }
+      }
     } catch (e) {
       _error = _handleError(e);
     } finally {
@@ -88,10 +103,18 @@ class GeminiTranslateViewModel extends ChangeNotifier {
   }
 
   String _handleError(dynamic e) {
-    String message = e.toString();
-    if (message.contains('429')) {
+    String message = e.toString().toLowerCase();
+
+    if (message.contains('503') || message.contains('service unavailable')) {
+      return 'AI servers are currently overloaded. Please wait a few seconds and try again.';
+    }
+    if (message.contains('429') || message.contains('too many requests')) {
       return 'Too many requests! Please wait 1 minute and try again (Quota Limit).';
     }
+    if (message.contains('quota') || message.contains('exhausted')) {
+      return 'Daily AI limit reached. Please try again tomorrow or use Basic mode.';
+    }
+
     return 'An error occurred: $e';
   }
 

@@ -136,7 +136,9 @@ class MainPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25.0),
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 120.0),
+                padding: const EdgeInsets.only(
+                  bottom: 40.0,
+                ), // Reduced from 120
                 child: OutputScreen(controller: viewModel.outputController),
               ),
             ),
@@ -206,7 +208,7 @@ class MainPage extends StatelessWidget {
                 );
               },
             ),
-            const SizedBox(width: 48), // Space for the FAB
+            const SizedBox(width: 48),
             IconButton(
               icon: Icon(Icons.quiz_outlined, color: inversePrimary, size: 28),
               onPressed: () {

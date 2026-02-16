@@ -92,6 +92,10 @@ class OutputScreen extends StatelessWidget {
                                   word: word,
                                   translation: translation,
                                 );
+                                // Trigger immediate history save on Favorite (ML mode only)
+                                if (viewModel.isMLPage) {
+                                  mlViewModel.saveHistoryNow(translation);
+                                }
                               }
                             },
                             icon: Icon(
