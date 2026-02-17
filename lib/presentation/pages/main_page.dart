@@ -6,7 +6,7 @@ import 'package:translate_app/presentation/pages/translate_page.dart';
 import 'package:translate_app/presentation/pages/history_page.dart';
 import 'package:translate_app/presentation/pages/favorites_page.dart';
 import 'package:translate_app/presentation/pages/profile_page.dart';
-import 'package:translate_app/presentation/pages/cards_page.dart';
+import 'package:translate_app/presentation/pages/decks_page.dart';
 import 'package:translate_app/presentation/widgets/output_screen.dart';
 import 'package:translate_app/presentation/viewmodels/main_viewmodel.dart';
 import 'package:translate_app/presentation/viewmodels/ml_translate_viewmodel.dart';
@@ -214,7 +214,7 @@ class MainPage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const CardsPage()),
+                  MaterialPageRoute(builder: (context) => const DecksPage()),
                 );
               },
             ),

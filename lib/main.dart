@@ -11,6 +11,7 @@ import 'package:translate_app/presentation/viewmodels/main_viewmodel.dart';
 import 'package:translate_app/presentation/viewmodels/gemini_translate_viewmodel.dart';
 import 'package:translate_app/presentation/viewmodels/ml_translate_viewmodel.dart';
 import 'package:translate_app/presentation/viewmodels/history_viewmodel.dart';
+import 'package:translate_app/presentation/viewmodels/decks_viewmodel.dart';
 import 'package:translate_app/data/services/local_storage_service.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,6 +45,10 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) =>
               HistoryViewModel(context.read<LocalStorageService>()),
+        ),
+        ChangeNotifierProvider(
+          create: (context) =>
+              DecksViewModel(context.read<LocalStorageService>()),
         ),
         ChangeNotifierProvider(
           create: (context) => GeminiTranslateViewModel(
