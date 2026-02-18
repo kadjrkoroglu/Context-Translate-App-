@@ -8,6 +8,7 @@ class LanguageDropdown extends StatelessWidget {
   final Set<String> downloadedModels;
   final bool showIcons;
   final bool isLoading;
+  final String? labelText;
 
   const LanguageDropdown({
     super.key,
@@ -18,6 +19,7 @@ class LanguageDropdown extends StatelessWidget {
     this.downloadedModels = const {},
     this.showIcons = true,
     this.isLoading = false,
+    this.labelText,
   });
 
   static const List<String> languages = [
@@ -78,7 +80,7 @@ class LanguageDropdown extends StatelessWidget {
         context,
       ).copyWith(splashColor: color.withValues(alpha: 0.2)),
       child: DropdownButtonFormField<String>(
-        value: effectiveValue,
+        initialValue: effectiveValue,
         hint: isPlaceholder
             ? Center(
                 child: Text(
@@ -92,6 +94,9 @@ class LanguageDropdown extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         dropdownColor: colorScheme.primary,
         decoration: InputDecoration(
+          labelText: labelText,
+          labelStyle: TextStyle(color: color.withValues(alpha: 0.7)),
+          floatingLabelBehavior: FloatingLabelBehavior.always,
           filled: true,
           fillColor: colorScheme.primary,
           isDense: true,
@@ -101,11 +106,15 @@ class LanguageDropdown extends StatelessWidget {
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: colorScheme.outline),
+            borderSide: BorderSide.none,
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: colorScheme.outline),
+            borderSide: BorderSide.none,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide.none,
           ),
         ),
         selectedItemBuilder: (context) {

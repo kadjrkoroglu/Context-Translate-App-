@@ -10,6 +10,7 @@ class CardItem {
   late String translation;
   late DateTime createdAt;
 
+  // For "study" logic
   DateTime? nextReviewDate;
-  int level = 0;
+  int level = 0; // For Spaced Repetition (SRS)
 }

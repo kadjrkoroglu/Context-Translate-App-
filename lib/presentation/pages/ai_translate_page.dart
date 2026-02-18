@@ -3,10 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:translate_app/presentation/widgets/dropdown.dart';
 import 'package:translate_app/presentation/viewmodels/gemini_translate_viewmodel.dart';
 
-class TranslatePage extends StatelessWidget {
+class AITranslatePage extends StatelessWidget {
   final TextEditingController outputController;
 
-  const TranslatePage({super.key, required this.outputController});
+  const AITranslatePage({super.key, required this.outputController});
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +84,7 @@ class TranslatePage extends StatelessWidget {
                         value: viewModel.selectedLanguage,
                         recentLanguages: viewModel.recentLanguages,
                         showIcons: false,
+                        labelText: 'Target Language',
                         onChanged: (value) {
                           viewModel.setSelectedLanguage(value!);
                         },
@@ -145,7 +146,17 @@ class TranslatePage extends StatelessWidget {
                               ),
                             ),
                           )
-                        : const Icon(Icons.translate, size: 26),
+                        : const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.translate, size: 20),
+                              SizedBox(width: 8),
+                              Text(
+                                'Translate',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
                   ),
                 ),
               ],
