@@ -62,4 +62,47 @@ class DecksViewModel extends ChangeNotifier {
       return card.nextReviewDate!.isBefore(now);
     }).length;
   }
+
+  Map<String, int> getCardCountsByStatus(DeckItem deck) {
+    final now = DateTime.now();
+
+    int newCount = 0;
+    int againCount = 0;
+    int hardCount = 0;
+    int goodCount = 0;
+    int easyCount = 0;
+
+    for (var card in deck.cards) {
+      if (card.nextReviewDate == null) {
+        // Newly added cards
+        newCount++;
+      } else if (card.nextReviewDate!.isBefore(now)) {
+        // Due for review - check by last rating
+        switch (card.lastRatingIndex) {
+          case 0:
+            againCount++;
+            break;
+          case 1:
+            hardCount++;
+            break;
+          case 2:
+            goodCount++;
+            break;
+          case 3:
+            easyCount++;
+            break;
+          default:
+            againCount++;
+        }
+      }
+    }
+
+    return {
+      'new': newCount,
+      'again': againCount,
+      'hard': hardCount,
+      'good': goodCount,
+      'easy': easyCount,
+    };
+  }
 }

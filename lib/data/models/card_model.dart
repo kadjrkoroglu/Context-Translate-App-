@@ -13,4 +13,6 @@ class CardItem {
   // For "study" logic
   DateTime? nextReviewDate;
   int level = 0; // For Spaced Repetition (SRS)
+  int?
+  lastRatingIndex; // For tracking last rating (0=again, 1=hard, 2=good, 3=easy)
 }

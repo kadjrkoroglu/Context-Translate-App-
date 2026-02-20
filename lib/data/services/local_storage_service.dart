@@ -100,4 +100,10 @@ class LocalStorageService {
       await isar.cardItems.delete(cardId);
     });
   }
+
+  Future<void> updateCard(CardItem card) async {
+    await isar.writeTxn(() async {
+      await isar.cardItems.put(card);
+    });
+  }
 }

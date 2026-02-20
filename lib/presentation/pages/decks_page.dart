@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:translate_app/presentation/viewmodels/decks_viewmodel.dart';
 import 'package:translate_app/presentation/pages/deck_detail_page.dart';
+import 'package:translate_app/presentation/pages/study_page.dart';
+import 'package:translate_app/presentation/viewmodels/study_viewmodel.dart';
+import 'package:translate_app/data/services/local_storage_service.dart';
 
 class DecksPage extends StatelessWidget {
   const DecksPage({super.key});
@@ -36,7 +39,6 @@ class DecksPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             itemBuilder: (context, index) {
               final deck = viewModel.decks[index];
-              final studyCount = viewModel.getStudyCount(deck);
 
               return Card(
                 color: colorScheme.primary,
@@ -70,30 +72,24 @@ class DecksPage extends StatelessWidget {
                       fontSize: 18,
                     ),
                   ),
-                  trailing: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: studyCount > 0
-                          ? Colors.orange.withValues(alpha: 0.2)
-                          : inversePrimary.withValues(alpha: 0.05),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      '$studyCount',
-                      style: TextStyle(
-                        color: studyCount > 0
-                            ? Colors.orange
-                            : inversePrimary.withValues(alpha: 0.6),
-                        fontWeight: studyCount > 0
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                        fontSize: 14,
-                      ),
-                    ),
+                  trailing: _buildCountBadges(
+                    viewModel.getCardCountsByStatus(deck),
+                    inversePrimary,
                   ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChangeNotifierProvider(
+                          create: (context) => StudyViewModel(
+                            context.read<LocalStorageService>(),
+                            deck,
+                          ),
+                          child: const StudyPage(),
+                        ),
+                      ),
+                    ).then((_) => viewModel.loadDecks());
+                  },
                   onLongPress: () => _showDeckOptions(context, deck, viewModel),
                 ),
               );
@@ -376,7 +372,8 @@ class DecksPage extends StatelessWidget {
                   wordController.text.trim(),
                   translationController.text.trim(),
                 );
-                if (context.mounted) Navigator.pop(context);
+                wordController.clear();
+                translationController.clear();
               }
             },
             style: ElevatedButton.styleFrom(
@@ -389,6 +386,42 @@ class DecksPage extends StatelessWidget {
             child: const Text('Add'),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCountBadges(Map<String, int> counts, Color inversePrimary) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _countBadge(counts['new'] ?? 0, Colors.grey.shade400, Colors.black87),
+        const SizedBox(width: 3),
+        _countBadge(counts['again'] ?? 0, Colors.red, Colors.white),
+        const SizedBox(width: 3),
+        _countBadge(counts['hard'] ?? 0, Colors.orange, Colors.white),
+        const SizedBox(width: 3),
+        _countBadge(counts['good'] ?? 0, Colors.green, Colors.white),
+        const SizedBox(width: 3),
+        _countBadge(counts['easy'] ?? 0, Colors.blue, Colors.white),
+      ],
+    );
+  }
+
+  Widget _countBadge(int count, Color bgColor, Color textColor) {
+    if (count == 0) return const SizedBox.shrink();
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        '$count',
+        style: TextStyle(
+          color: textColor,
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
