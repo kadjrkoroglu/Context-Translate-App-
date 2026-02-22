@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:provider/provider.dart';
-import 'package:translate_app/presentation/pages/main_page.dart';
+import 'package:translate_app/presentation/pages/welcome_page.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:translate_app/presentation/viewmodels/favorite_viewmodel.dart';
@@ -77,7 +77,7 @@ class MyApp extends StatelessWidget {
       builder: (context, themeProvider, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: const MainPage(),
+          home: const WelcomePage(),
           theme: lightTheme,
           darkTheme: darkTheme,
           themeMode: themeProvider.themeMode,

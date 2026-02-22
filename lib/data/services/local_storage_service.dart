@@ -58,7 +58,7 @@ class LocalStorageService {
   }
 
   Future<List<DeckItem>> getAllDecks() async {
-    return await isar.deckItems.where().sortByCreatedAtDesc().findAll();
+    return await isar.deckItems.where().sortByCreatedAt().findAll();
   }
 
   Future<void> saveDeck(DeckItem deck) async {

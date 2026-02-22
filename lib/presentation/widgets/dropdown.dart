@@ -57,6 +57,9 @@ class LanguageDropdown extends StatelessWidget {
     final List<dynamic> dropdownData = [];
     final List<String> allLangs = items ?? languages;
 
+    // Add user requested header at the very top
+    dropdownData.add('SELECT_HEADER');
+
     if (recentLanguages.isNotEmpty && items == null) {
       dropdownData.add('RECENTS');
       dropdownData.addAll(recentLanguages);
@@ -84,8 +87,12 @@ class LanguageDropdown extends StatelessWidget {
         hint: isPlaceholder
             ? Center(
                 child: Text(
-                  '—',
-                  style: TextStyle(color: color, fontWeight: FontWeight.bold),
+                  'Select',
+                  style: TextStyle(
+                    color: color.withValues(alpha: 0.6),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               )
             : null,
@@ -96,7 +103,7 @@ class LanguageDropdown extends StatelessWidget {
         decoration: InputDecoration(
           labelText: labelText,
           labelStyle: TextStyle(color: color.withValues(alpha: 0.7)),
-          floatingLabelBehavior: FloatingLabelBehavior.always,
+          floatingLabelBehavior: FloatingLabelBehavior.never,
           filled: true,
           fillColor: colorScheme.primary,
           isDense: true,
@@ -142,11 +149,16 @@ class LanguageDropdown extends StatelessWidget {
               child: Divider(color: color.withValues(alpha: 0.2)),
             );
           }
-          if (data == 'RECENTS' || data == 'ALL LANGUAGES') {
+          if (data == 'RECENTS' ||
+              data == 'ALL LANGUAGES' ||
+              data == 'SELECT_HEADER') {
+            final String displayText = data == 'SELECT_HEADER'
+                ? 'SELECT TARGET LANGUAGE'
+                : data;
             return DropdownMenuItem<String>(
               enabled: false,
               child: Text(
-                data,
+                displayText,
                 style: TextStyle(
                   color: color.withValues(alpha: 0.5),
                   fontSize: 11,

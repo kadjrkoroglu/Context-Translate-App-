@@ -3,10 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:translate_app/presentation/widgets/dropdown.dart';
 import 'package:translate_app/presentation/viewmodels/gemini_translate_viewmodel.dart';
 
-class AITranslatePage extends StatelessWidget {
+class GeminiTranslatePage extends StatelessWidget {
   final TextEditingController outputController;
 
-  const AITranslatePage({super.key, required this.outputController});
+  const GeminiTranslatePage({super.key, required this.outputController});
 
   @override
   Widget build(BuildContext context) {
@@ -78,13 +78,13 @@ class AITranslatePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(
+                  flex: 1,
                   child: Stack(
                     children: [
                       LanguageDropdown(
                         value: viewModel.selectedLanguage,
                         recentLanguages: viewModel.recentLanguages,
                         showIcons: false,
-                        labelText: 'Target Language',
                         onChanged: (value) {
                           viewModel.setSelectedLanguage(value!);
                         },
@@ -120,7 +120,9 @@ class AITranslatePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
+                // Translate Button (Middle)
                 Expanded(
+                  flex: 1,
                   child: ElevatedButton(
                     onPressed: viewModel.isLoading
                         ? null
@@ -146,17 +148,102 @@ class AITranslatePage extends StatelessWidget {
                               ),
                             ),
                           )
-                        : const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.translate, size: 20),
-                              SizedBox(width: 8),
-                              Text(
-                                'Translate',
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                        : const Icon(Icons.translate, size: 24),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // Tone Selector (Right)
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: primaryColor,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: outlineColor),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<int>(
+                        value: viewModel.selectedToneIndex,
+                        isExpanded: true,
+                        icon: Icon(
+                          Icons.arrow_drop_down,
+                          size: 20,
+                          color: inversePrimary,
+                        ),
+                        dropdownColor: primaryColor,
+                        borderRadius: BorderRadius.circular(16),
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        selectedItemBuilder: (context) {
+                          return const [
+                            Center(
+                              child: Text(
+                                'Standard',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ],
+                            ),
+                            Center(
+                              child: Text(
+                                'Formal',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Center(
+                              child: Text(
+                                'Slang',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ];
+                        },
+                        items: [
+                          DropdownMenuItem(
+                            value: 0,
+                            child: Text(
+                              'Std',
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: inversePrimary,
+                              ),
+                            ),
                           ),
+                          DropdownMenuItem(
+                            value: 1,
+                            child: Text(
+                              'Formal',
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: inversePrimary,
+                              ),
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: 2,
+                            child: Text(
+                              'Slang',
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: inversePrimary,
+                              ),
+                            ),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          viewModel.setSelectedToneIndex(
+                            value!,
+                            outputController,
+                          );
+                        },
+                      ),
+                    ),
                   ),
                 ),
               ],

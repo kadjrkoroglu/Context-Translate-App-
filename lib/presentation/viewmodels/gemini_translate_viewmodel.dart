@@ -15,6 +15,8 @@ class GeminiTranslateViewModel extends ChangeNotifier {
   late String _selectedLanguage;
   bool _speechEnabled = false;
   final TextEditingController _textController = TextEditingController();
+  List<String> _results = [];
+  int _selectedToneIndex = 0; // 0: Standard, 1: Formal, 2: Slang
 
   bool get isLoading => _isLoading;
   String? get error => _error;
@@ -23,6 +25,7 @@ class GeminiTranslateViewModel extends ChangeNotifier {
   bool get isListening => _speechToText.isListening;
   TextEditingController get textController => _textController;
   List<String> get recentLanguages => _settingsService.recentLanguages;
+  int get selectedToneIndex => _selectedToneIndex;
 
   GeminiTranslateViewModel(this._settingsService, this._historyViewModel) {
     _selectedLanguage = _settingsService.geminiTargetLang;
@@ -36,18 +39,49 @@ class GeminiTranslateViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _initSpeech() async {
-    _speechEnabled = await _speechToText.initialize(
-      onStatus: (status) {
-        if (status == 'done' || status == 'notListening') {
-          notifyListeners();
-        }
-      },
-      onError: (error) {
-        notifyListeners();
-      },
-    );
+  void setSelectedToneIndex(int index, TextEditingController outputController) {
+    _selectedToneIndex = index;
+    _updateOutputText(outputController);
     notifyListeners();
+  }
+
+  void _updateOutputText(TextEditingController outputController) {
+    if (_results.isEmpty) return;
+
+    if (_results.length > _selectedToneIndex) {
+      outputController.text = _results[_selectedToneIndex];
+    } else {
+      outputController.text = _results[0];
+    }
+  }
+
+  bool _isInitializingSpeech = false;
+
+  Future<void> _initSpeech() async {
+    if (_speechEnabled || _isInitializingSpeech) return;
+
+    _isInitializingSpeech = true;
+    try {
+      _speechEnabled = await _speechToText.initialize(
+        onStatus: (status) {
+          if (status == 'done' || status == 'notListening') {
+            notifyListeners();
+          }
+        },
+        onError: (error) {
+          debugPrint('Speech recognition error: ${error.errorMsg}');
+          _speechEnabled = false;
+          _isInitializingSpeech = false;
+          notifyListeners();
+        },
+      );
+    } catch (e) {
+      debugPrint('Speech recognition initialization failed: $e');
+      _speechEnabled = false;
+    } finally {
+      _isInitializingSpeech = false;
+      notifyListeners();
+    }
   }
 
   Future<void> startListening(Function(String) onResult) async {
@@ -82,7 +116,8 @@ class GeminiTranslateViewModel extends ChangeNotifier {
         _textController.text,
         _selectedLanguage,
       );
-      outputController.text = response.map((t) => '● $t').join('\n\n');
+      _results = response;
+      _updateOutputText(outputController);
 
       // Save to history with trimmed text
       if (outputController.text.isNotEmpty) {
@@ -98,6 +133,7 @@ class GeminiTranslateViewModel extends ChangeNotifier {
       }
     } catch (e) {
       _error = _handleError(e);
+      _results = [];
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -123,6 +159,7 @@ class GeminiTranslateViewModel extends ChangeNotifier {
   void clear(TextEditingController outputController) {
     _textController.clear();
     outputController.clear();
+    _results = [];
     notifyListeners();
   }
 

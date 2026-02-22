@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:translate_app/presentation/pages/ml_translate_page.dart';
-import 'package:translate_app/presentation/pages/ai_translate_page.dart';
+import 'package:translate_app/presentation/pages/gemini_translate_page.dart';
 import 'package:translate_app/presentation/pages/history_page.dart';
 import 'package:translate_app/presentation/pages/favorites_page.dart';
 import 'package:translate_app/presentation/pages/profile_page.dart';
@@ -123,7 +123,7 @@ class MainPage extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: AITranslatePage(
+                    child: GeminiTranslatePage(
                       outputController: viewModel.outputController,
                     ),
                   ),
