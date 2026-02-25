@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:provider/provider.dart';
-import 'package:translate_app/presentation/pages/welcome_page.dart';
+import 'package:translate_app/presentation/pages/auth/auth_wrapper.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:translate_app/presentation/viewmodels/favorite_viewmodel.dart';
@@ -17,11 +18,19 @@ import 'package:translate_app/data/services/local_storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translate_app/data/services/settings_service.dart';
 
+import 'package:translate_app/data/services/auth_service.dart';
+import 'package:translate_app/data/repositories/auth_repository.dart';
+import 'package:translate_app/presentation/viewmodels/auth_viewmodel.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
   final localStorage = LocalStorageService();
   await localStorage.init();
+
+  final authService = AuthService();
+  final authRepository = AuthRepository(authService);
 
   final prefs = await SharedPreferences.getInstance();
   final settingsService = SettingsService(prefs);
@@ -35,9 +44,11 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => AuthViewModel(authRepository)),
         ChangeNotifierProvider(create: (_) => MainViewModel()),
         Provider<SettingsService>.value(value: settingsService),
         Provider<LocalStorageService>.value(value: localStorage),
+        Provider<AuthRepository>.value(value: authRepository),
         ChangeNotifierProvider(
           create: (context) =>
               FavoriteViewModel(context.read<LocalStorageService>()),
@@ -77,7 +88,7 @@ class MyApp extends StatelessWidget {
       builder: (context, themeProvider, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: const WelcomePage(),
+          home: const AuthWrapper(),
           theme: lightTheme,
           darkTheme: darkTheme,
           themeMode: themeProvider.themeMode,

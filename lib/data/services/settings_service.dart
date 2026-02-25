@@ -41,4 +41,9 @@ class SettingsService {
   String get geminiTargetLang => _prefs.getString(_keyGeminiLang) ?? '-';
   Future<void> setGeminiTargetLang(String lang) =>
       _prefs.setString(_keyGeminiLang, lang);
+
+  // First Run logic
+  static const String _keyFirstRun = 'is_first_run';
+  bool get isFirstRun => _prefs.getBool(_keyFirstRun) ?? true;
+  Future<void> setFirstRunComplete() => _prefs.setBool(_keyFirstRun, false);
 }

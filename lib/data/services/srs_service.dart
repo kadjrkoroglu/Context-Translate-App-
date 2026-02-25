@@ -7,12 +7,12 @@ class SRSService {
   static CardItem calculateNextReview(CardItem card, StudyRating rating) {
     final now = DateTime.now();
 
-    // 1. Case: Again - Reset progress
+    // Again - Reset progress
     if (rating == StudyRating.again) {
       card.repetitions = 0;
       card.interval = 0;
     } else {
-      // 2. Case: SM-2 Algorithm Implementation
+      // SM-2 Algorithm
       if (card.repetitions == 0) {
         // First time studying: New Card
         if (rating == StudyRating.easy) {
@@ -22,10 +22,10 @@ class SRSService {
           card.interval = 1;
         }
       } else if (card.repetitions == 1) {
-        // Second repetition: Always 6 days per SM-2 rule
+        // Second rep: 6 days (SM-2)
         card.interval = 6;
       } else {
-        // 3rd and subsequent repetitions: Interval * EaseFactor
+        // Resulting reps: Interval * EaseFactor
         int q = 3; // Default: hard
         if (rating == StudyRating.good) q = 4;
         if (rating == StudyRating.easy) q = 5;
@@ -39,11 +39,11 @@ class SRSService {
         card.interval = (card.interval * card.easeFactor).round();
       }
 
-      // Repetition increment should be done after calculation per SM-2 logic
+      // Increment repetitions
       card.repetitions += 1;
     }
 
-    // 3. Fuzz (Random Deviation) Calculation
+    // Fuzz Calculation
     int fuzzedInterval = card.interval;
     if (fuzzedInterval > 0) {
       final fuzzDays = (fuzzedInterval * 0.05).round();
@@ -56,7 +56,7 @@ class SRSService {
       if (fuzzedInterval < 1) fuzzedInterval = 1;
     }
 
-    // 4. Next Review Date Assignment (Day vs Minute distinction)
+    // Schedule next review
     if (rating == StudyRating.again) {
       // If "Again" is selected, card is shown again immediately (within 1 minute)
       card.nextReviewDate = now.add(const Duration(minutes: 1));

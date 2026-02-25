@@ -13,6 +13,7 @@ import 'package:translate_app/presentation/widgets/app_background.dart';
 import 'package:translate_app/presentation/viewmodels/main_viewmodel.dart';
 import 'package:translate_app/presentation/viewmodels/ml_translate_viewmodel.dart';
 import 'package:translate_app/presentation/viewmodels/gemini_translate_viewmodel.dart';
+import 'package:translate_app/theme/theme.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
@@ -75,6 +76,7 @@ class MainPage extends StatelessWidget {
         ),
       ),
       floatingActionButton: _buildGlassMicrophoneButton(
+        context,
         viewModel,
         mlViewModel,
         geminiViewModel,
@@ -175,18 +177,25 @@ class MainPage extends StatelessWidget {
   }
 
   Widget _buildGlassMicrophoneButton(
+    BuildContext context,
     MainViewModel viewModel,
     MLTranslateViewModel mlVM,
     GeminiTranslateViewModel gVM,
     Color inversePrimary,
   ) {
+    final glassTheme = Theme.of(context).extension<GlassThemeExtension>();
     return Container(
       width: 76,
       height: 76,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: const LinearGradient(
-          colors: [Color(0xFF89979D), Color.fromARGB(255, 94, 106, 121)],
+        gradient: LinearGradient(
+          colors:
+              glassTheme?.micGradient ??
+              [
+                const Color(0xFF89979D),
+                const Color.fromARGB(255, 94, 106, 121),
+              ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -232,7 +241,7 @@ class MainPage extends StatelessWidget {
     return BottomAppBar(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       height: 85,
-      color: Colors.white.withValues(alpha: 0.1), // Slightly transparent white
+      color: Colors.white.withValues(alpha: 0.1),
       elevation: 0,
       shape: const CircularNotchedRectangle(),
       notchMargin: 12,

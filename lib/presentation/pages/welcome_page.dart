@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
-import 'package:translate_app/presentation/pages/login_page.dart';
+import 'package:translate_app/presentation/pages/auth/login_page.dart';
 import 'package:translate_app/presentation/pages/main_page.dart';
 import 'package:translate_app/presentation/widgets/app_background.dart';
+import 'package:translate_app/data/services/settings_service.dart';
+import 'package:provider/provider.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -117,13 +119,18 @@ class WelcomePage extends StatelessWidget {
                         ),
                       ),
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const MainPage(),
-                            ),
-                          );
+                        onPressed: () async {
+                          await context
+                              .read<SettingsService>()
+                              .setFirstRunComplete();
+                          if (context.mounted) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const MainPage(),
+                              ),
+                            );
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.transparent,
@@ -162,13 +169,18 @@ class WelcomePage extends StatelessWidget {
                         ),
                       ),
                       child: TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const LoginPage(),
-                            ),
-                          );
+                        onPressed: () async {
+                          await context
+                              .read<SettingsService>()
+                              .setFirstRunComplete();
+                          if (context.mounted) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LoginPage(),
+                              ),
+                            );
+                          }
                         },
                         style: TextButton.styleFrom(
                           foregroundColor: Colors.white,

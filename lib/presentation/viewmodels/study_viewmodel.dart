@@ -8,9 +8,9 @@ class StudyViewModel extends ChangeNotifier {
   final LocalStorageService _storageService;
   final DeckItem deck;
 
-  // Dynamic queue - rebuilt after each rating
+  // Study queue
   List<CardItem> _queue = [];
-  // Track cards we've already completed (not Again) for progress
+  // Session progress
   int _completedCount = 0;
   int _totalSessionCards = 0;
 
@@ -22,7 +22,7 @@ class StudyViewModel extends ChangeNotifier {
   int _allowedNew = 0;
   int _allowedReviews = 0;
 
-  // Track IDs of cards already studied in this session (to enforce limits)
+  // Active session tracking
   final Set<int> _sessionNewCardIds = {};
   final Set<int> _sessionReviewCardIds = {};
 
@@ -90,10 +90,7 @@ class StudyViewModel extends ChangeNotifier {
     }
   }
 
-  /// Rebuilds the study queue dynamically with priority:
-  /// 1. Unlearned New Cards
-  /// 2. "Again" cards whose cooldown has expired (interleaved)
-  /// 3. Old Reviews (due cards)
+  /// Rebuilds the study queue dynamically.
   void _rebuildQueue() {
     final now = DateTime.now();
     final allCards = deck.cards.toList();
@@ -130,8 +127,7 @@ class StudyViewModel extends ChangeNotifier {
     // Sort reviews by urgency (oldest due first)
     reviewCards.sort((a, b) => a.nextReviewDate!.compareTo(b.nextReviewDate!));
 
-    // Build interleaved queue:
-    // Pattern: New, New, Again, New, New, Again, ... then remaining Reviews
+    // Build queue (New -> Again -> Reviews)
     _queue = [];
     int newIdx = 0;
     int againIdx = 0;
@@ -163,7 +159,7 @@ class StudyViewModel extends ChangeNotifier {
 
     final card = currentCard!;
 
-    // Track which cards we've seen in this session
+    // Track session cards
     if (card.isNewCard || card.nextReviewDate == null) {
       _sessionNewCardIds.add(card.id);
     } else if (card.repetitions > 0) {
@@ -176,7 +172,7 @@ class StudyViewModel extends ChangeNotifier {
 
     _isAnswerVisible = false;
 
-    // Only count as "completed" if NOT Again (Again cards will come back)
+    // Success count
     if (rating != StudyRating.again) {
       _completedCount++;
     }

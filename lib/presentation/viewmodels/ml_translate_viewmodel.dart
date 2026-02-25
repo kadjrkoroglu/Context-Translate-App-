@@ -47,7 +47,7 @@ class MLTranslateViewModel extends ChangeNotifier {
     final modelManager = OnDeviceTranslatorModelManager();
     final List<String> downloaded = [];
 
-    // Check all languages from our list
+    // Check all languages in the list
     for (final lang in MlLanguages.languageList) {
       final bcp = MlLanguages.mapNameToBCP(lang);
       if (await modelManager.isModelDownloaded(bcp)) {
@@ -91,7 +91,7 @@ class MLTranslateViewModel extends ChangeNotifier {
     _sourceLanguage = _targetLanguage;
     _targetLanguage = temp;
 
-    // Persist changes
+    // Persist
     _settingsService.setMlSourceLang(_sourceLanguage);
     _settingsService.setMlTargetLang(_targetLanguage);
     _settingsService.addRecentLanguage(_sourceLanguage);
@@ -154,7 +154,7 @@ class MLTranslateViewModel extends ChangeNotifier {
           await _dictionaryService.downloadDictionary(bcpCode);
         }
         await modelManager.downloadModel(bcpCode);
-        await fetchDownloadedModels(); // Refresh list after download
+        await fetchDownloadedModels(); // Refresh
       } catch (e) {
         debugPrint('Download error: $e');
       } finally {
@@ -209,10 +209,10 @@ class MLTranslateViewModel extends ChangeNotifier {
       );
       outputController.text = response ?? '';
 
-      // Cancel previous history timer to wait for 3 seconds of silence
+      // Debounce history saving
       _historyTimer?.cancel();
 
-      // Save to history only after 3 seconds of inactivity
+      // Save after 3s inactivity
       if (outputController.text.isNotEmpty) {
         final trimmedWord = originalText.trim();
         final trimmedTranslation = outputController.text.trim();
@@ -238,7 +238,7 @@ class MLTranslateViewModel extends ChangeNotifier {
     await _speechToText.listen(
       onResult: (result) {
         _textController.text = result.recognizedWords;
-        // When voice input happens, we also trigger translate
+        // Auto-translate voice result
         translate(outputController);
       },
     );
@@ -273,7 +273,7 @@ class MLTranslateViewModel extends ChangeNotifier {
   }
 
   void clear(TextEditingController outputController) {
-    // Save history immediately before clearing if there's a result
+    // Save history before clear
     if (outputController.text.isNotEmpty) {
       saveHistoryNow(outputController.text);
     }
