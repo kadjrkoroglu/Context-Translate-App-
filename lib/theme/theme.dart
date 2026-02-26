@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// Custom extension for Glassmorphic and Gradient theme properties
 class GlassThemeExtension extends ThemeExtension<GlassThemeExtension> {
   final Color baseGlassColor;
   final Color borderGlassColor;
@@ -62,8 +61,7 @@ final ThemeData lightTheme = ThemeData(
     secondary: Colors.grey.shade400,
     tertiary: Colors.grey.shade600,
     surfaceContainer: Colors.black,
-    inversePrimary: Colors
-        .white, // Keeping text white as per user preference for glass look
+    inversePrimary: Colors.white,
     outline: Colors.black,
   ),
   extensions: [
@@ -80,6 +78,11 @@ final ThemeData lightTheme = ThemeData(
       ],
     ),
   ],
+  textSelectionTheme: const TextSelectionThemeData(
+    cursorColor: Colors.black,
+    selectionColor: Colors.black26,
+    selectionHandleColor: Colors.black,
+  ),
 );
 
 final ThemeData darkTheme = ThemeData(
@@ -107,4 +110,9 @@ final ThemeData darkTheme = ThemeData(
       ],
     ),
   ],
+  textSelectionTheme: const TextSelectionThemeData(
+    cursorColor: Colors.white,
+    selectionColor: Colors.white24,
+    selectionHandleColor: Colors.white,
+  ),
 );

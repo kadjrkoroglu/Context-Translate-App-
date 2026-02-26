@@ -26,10 +26,7 @@ class OutputScreen extends StatelessWidget {
       child: AnimatedBuilder(
         animation: Listenable.merge([viewModel.pageController, controller]),
         builder: (context, _) {
-          final page = viewModel.pageController.hasClients
-              ? (viewModel.pageController.page ?? 0)
-              : 0.0;
-          final fontSize = 26 - (page * 8);
+          const double fontSize = 26;
 
           return ClipRRect(
             borderRadius: BorderRadius.circular(24),

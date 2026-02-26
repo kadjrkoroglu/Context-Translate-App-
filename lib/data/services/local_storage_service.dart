@@ -93,9 +93,9 @@ class LocalStorageService {
     });
   }
 
-  Future<void> deleteCard(int cardId) async {
+  Future<void> deleteCards(List<int> cardIds) async {
     await isar.writeTxn(() async {
-      await isar.cardItems.delete(cardId);
+      await isar.cardItems.deleteAll(cardIds);
     });
   }
 

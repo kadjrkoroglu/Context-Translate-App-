@@ -51,6 +51,7 @@ class MLTranslatePage extends StatelessWidget {
                               fontSize: 26,
                               fontWeight: FontWeight.w500,
                             ),
+                            cursorColor: Colors.white,
                             decoration: InputDecoration(
                               hintText: 'Enter text',
                               hintStyle: TextStyle(
@@ -207,10 +208,10 @@ class MLTranslatePage extends StatelessWidget {
                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.1),
+                      color: Colors.white.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.2),
+                        color: Colors.white.withValues(alpha: 0.1),
                       ),
                     ),
                     child: const Row(

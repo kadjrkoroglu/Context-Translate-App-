@@ -55,6 +55,11 @@ class DecksViewModel extends ChangeNotifier {
     await loadDecks();
   }
 
+  Future<void> deleteMultipleCards(List<int> cardIds) async {
+    await _storageService.deleteCards(cardIds);
+    await loadDecks();
+  }
+
   int getStudyCount(DeckItem deck) {
     final now = DateTime.now();
     return deck.cards.where((card) {

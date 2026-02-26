@@ -10,7 +10,7 @@ class MainViewModel extends ChangeNotifier {
   TextEditingController get sourceController => _sourceController;
 
   bool get isMLPage =>
-      _pageController.hasClients && (_pageController.page ?? 0) < 0.5;
+      _pageController.hasClients && (_pageController.page ?? 0) > 0.5;
 
   void animateToPage(int index) {
     _pageController.animateToPage(

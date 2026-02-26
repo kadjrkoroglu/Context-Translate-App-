@@ -57,10 +57,10 @@ class MainPage extends StatelessWidget {
                   controller: viewModel.pageController,
                   onPageChanged: (index) => viewModel.clearOutput(),
                   children: [
-                    MLTranslatePage(
+                    GeminiTranslatePage(
                       outputController: viewModel.outputController,
                     ),
-                    GeminiTranslatePage(
+                    MLTranslatePage(
                       outputController: viewModel.outputController,
                     ),
                   ],
@@ -129,8 +129,8 @@ class MainPage extends StatelessWidget {
           ),
           Row(
             children: [
-              _buildToggleButton(context, viewModel, 'Basic', 0),
-              _buildToggleButton(context, viewModel, 'AI', 1),
+              _buildToggleButton(context, viewModel, 'AI', 0),
+              _buildToggleButton(context, viewModel, 'Basic', 1),
             ],
           ),
         ],
@@ -211,17 +211,13 @@ class MainPage extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            final isMLPage = (viewModel.pageController.page ?? 0) < 0.5;
+            final isMLPage = (viewModel.pageController.page ?? 0) > 0.5;
             if (isMLPage) {
               mlVM.isListening
                   ? mlVM.stopListening()
                   : mlVM.startListening(viewModel.outputController);
             } else {
-              gVM.isListening
-                  ? gVM.stopListening()
-                  : gVM.startListening(
-                      (_) => gVM.translate(viewModel.outputController),
-                    );
+              gVM.isListening ? gVM.stopListening() : gVM.startListening();
             }
           },
           customBorder: const CircleBorder(),

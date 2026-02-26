@@ -84,11 +84,10 @@ class GeminiTranslateViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> startListening(Function(String) onResult) async {
+  Future<void> startListening() async {
     await _speechToText.listen(
       onResult: (result) {
         _textController.text = result.recognizedWords;
-        onResult(result.recognizedWords);
       },
     );
     notifyListeners();

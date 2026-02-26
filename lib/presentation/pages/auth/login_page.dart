@@ -248,6 +248,7 @@ class _LoginPageState extends State<LoginPage> {
             obscureText: obscureText,
             keyboardType: keyboardType,
             style: const TextStyle(color: Colors.white),
+            cursorColor: Colors.white,
             decoration: InputDecoration(
               hintText: hint,
               hintStyle: const TextStyle(color: Colors.white60),

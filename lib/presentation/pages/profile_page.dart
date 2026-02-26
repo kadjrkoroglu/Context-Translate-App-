@@ -67,9 +67,7 @@ class ProfilePage extends StatelessWidget {
               _buildProfileAvatar(user, isAuthenticated, glassTheme, textColor),
               const SizedBox(height: 20),
               Text(
-                isAuthenticated
-                    ? (user?.displayName ?? 'User')
-                    : 'Guest Explorer',
+                isAuthenticated ? (user?.displayName ?? 'User') : 'Guest',
                 style: const TextStyle(
                   color: textColor,
                   fontSize: 22,
@@ -105,7 +103,7 @@ class ProfilePage extends StatelessWidget {
                 trailing: Switch(
                   value: themeProvider.isDarkMode,
                   onChanged: (value) => themeProvider.toggleTheme(value),
-                  activeColor: Colors.white,
+                  activeThumbColor: Colors.white,
                   activeTrackColor: Colors.white24,
                 ),
               ),
@@ -258,7 +256,7 @@ class ProfilePage extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                'Unlock All Features',
+                'Synchronize',
                 style: TextStyle(
                   color: textColor,
                   fontWeight: FontWeight.bold,
@@ -267,7 +265,7 @@ class ProfilePage extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'Sign in to backup your data and study on multiple devices.',
+                'Sign in to sync your decks, favorites and history across all your devices.',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: subTextColor, fontSize: 13),
               ),
@@ -293,7 +291,7 @@ class ProfilePage extends StatelessWidget {
                     elevation: 0,
                   ),
                   child: const Text(
-                    'Get Started',
+                    'Sign In',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),

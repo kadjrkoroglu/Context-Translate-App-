@@ -5,6 +5,7 @@ class SettingsService {
   static const String _keyTargetLang = 'ml_target_lang';
   static const String _keyGeminiLang = 'gemini_target_lang';
   static const String _keyRecentLangs = 'recent_languages';
+  static const String _keyThemeMode = 'theme_mode';
 
   final SharedPreferences _prefs;
 
@@ -41,6 +42,11 @@ class SettingsService {
   String get geminiTargetLang => _prefs.getString(_keyGeminiLang) ?? '-';
   Future<void> setGeminiTargetLang(String lang) =>
       _prefs.setString(_keyGeminiLang, lang);
+
+  // Theme Mode
+  String get themeMode => _prefs.getString(_keyThemeMode) ?? 'system';
+  Future<void> setThemeMode(String mode) =>
+      _prefs.setString(_keyThemeMode, mode);
 
   // First Run logic
   static const String _keyFirstRun = 'is_first_run';
